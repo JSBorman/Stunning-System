@@ -1,5 +1,8 @@
 #include "ofApp.h"
+#include "midi_button.cpp"
 
+const int grid_size = 4;
+midi_button grid [grid_size][grid_size];
 //--------------------------------------------------------------
 void ofApp::setup(){
 	//size of convas or window
@@ -8,6 +11,21 @@ void ofApp::setup(){
 
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	ofSetBackgroundAuto(false);
+	initialize_board();
+}
+
+//Populate grid with buttons
+void ofApp::initialize_board(){
+	int radius = 50;
+	int left_margin = 100;
+	int top_margin = 100;
+	for (int i = 0; i < grid_size; i++){
+		for(int j = 0; j < grid_size; j++){
+			grid[i][j] = midi_button(left_margin + (i*ofGetWidth()/grid_size),
+									top_margin + (j*ofGetHeight()/grid_size),
+									radius);
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -15,17 +33,12 @@ void ofApp::update(){
 	ofBackground(ofColor::white);
 	ofSetColor(ofColor::green);
 
-
-	//Create four by four grid of circles
-	int grid_size = 4;
-	int radius = 50;
-	int left_margin = 100;
-	int top_margin = 100;
+	//Draw all the buttons in grid
 	for (int i = 0; i < grid_size; i++){
 		for(int j = 0; j < grid_size; j++){
-			ofDrawCircle(left_margin + (i*ofGetWidth()/grid_size),
-						 top_margin + (j*ofGetHeight()/grid_size),
-						 radius);
+			ofDrawCircle(grid[i][j].x_pos,
+						 grid[i][j].y_pos,
+						 grid[i][j].radius);
 		}
 	}
 }

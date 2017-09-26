@@ -8,6 +8,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void initialize_board();	//Draw the base midi board
 
 		void keyPressed(int key);
 		void keyReleased(int key);
