@@ -10,6 +10,7 @@ class ofApp : public ofBaseApp{
 		void draw();
 		void initialize_board();	//Draw the base midi board
 
+		void audioOut(float* buffer, int bufferSize, int nChannels);
 		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );

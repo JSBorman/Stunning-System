@@ -5,13 +5,13 @@ const int grid_size = 4;
 midi_button grid [grid_size][grid_size];
 //--------------------------------------------------------------
 void ofApp::setup(){
-	//size of convas or window
-	// proportional size of square
-	//outline only, no fill
-
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	ofSetBackgroundAuto(false);
+
 	initialize_board();
+
+	//Needs to be at end of function
+	ofSoundStreamSetup(2, 0, 48000, 512, 4);
 }
 
 //Populate grid with buttons
@@ -55,6 +55,14 @@ void ofApp::draw(){
 
 }
 
+void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
+	for (int i = 0; i < bufferSize; i++){
+		float currentSample = 0;
+
+		buffer[i] = currentSample;
+	}
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
@@ -87,8 +95,10 @@ void ofApp::mousePressed(int x, int y, int button){
 			}
 		}
 	}
-
 }
+
+
+
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
