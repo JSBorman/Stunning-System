@@ -31,14 +31,21 @@ void ofApp::initialize_board(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	ofBackground(ofColor::white);
-	ofSetColor(ofColor::green);
+	ofSetColor(ofColor::black);
 
 	//Draw all the buttons in grid
 	for (int i = 0; i < grid_size; i++){
 		for(int j = 0; j < grid_size; j++){
+			
+			//Draw active buttons as green
+			if (grid[i][j].isOn)
+				ofSetColor(ofColor::green);
+
 			ofDrawCircle(grid[i][j].x_pos,
 						 grid[i][j].y_pos,
 						 grid[i][j].radius);
+
+			ofSetColor(ofColor::black);
 		}
 	}
 }
@@ -70,6 +77,16 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+
+	//Check if the user clicked inside a circle
+	for(int i = 0; i < grid_size; i++){
+		for (int j = 0; j < grid_size; j++){
+			if (grid[i][j].isPointInCircle(x, y) ){
+				grid[i][j].pressButton();
+				return;
+			}
+		}
+	}
 
 }
 
