@@ -124,9 +124,9 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 
 			phaseIncrement = (TWO_PI * grid[i][j].freq)/ (float)48000;
 
-			while (grid[i][j].isPlaying){
+			if (grid[i][j].isPlaying){
 				//If there is a button, play it
-				//for (int i = 0; i < bufferSize; i++){
+				for (int i = 0; i < bufferSize; i++){
 
 					float currentSample = 0;
 
@@ -135,7 +135,7 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 
 					buffer[i*nChannels + 0] = currentSample;	//Left Channel
 					buffer[i*nChannels + 1] = currentSample;	//Right Channel
-				//}
+				}
 			}
 		}
 
