@@ -18,13 +18,13 @@ void ofApp::setup(){
 	frequency = 440;
 	amplitude = 1;
 	phase = 0;
-	phaseIncrement = (TWO_PI * frequency)/ (float)48000;
 
 	//Leave at end of function
 	ofSoundStreamSetup(2, 0, 48000, 512, 4);
 }
 
 //Populate grid with buttons
+//Each row of buttons should have the same tone
 void ofApp::initialize_board(){
 	int radius = 50;
 	int left_margin = 100;
@@ -33,7 +33,8 @@ void ofApp::initialize_board(){
 		for(int j = 0; j < grid_size; j++){
 			grid[i][j] = midi_button(left_margin + (i*ofGetWidth()/grid_size),
 									top_margin + (j*ofGetHeight()/grid_size),
-									radius);
+									radius,
+									frequency + (i*100));
 		}
 	}
 }
@@ -113,15 +114,29 @@ void ofApp::draw(){
 }
 
 void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
-	for (int i = 0; i < bufferSize; i++){
-		float currentSample = 0;
+	
+	//Check each button for noise
+	for(int i = 0; i < grid_size; i++)
+		for (int j = 0; j < grid_size; j++){
 
-		currentSample = sin(phase) * amplitude;
-		phase += phaseIncrement;
+			phaseIncrement = (TWO_PI * grid[i][j].freq)/ (float)48000;
 
-		buffer[i*nChannels + 0] = currentSample;	//Left Channel
-		buffer[i*nChannels + 1] = currentSample;	//Right Channel
-	}
+			while (grid[i][j].isPlaying){
+				//If there is a button, play it
+				//for (int i = 0; i < bufferSize; i++){
+
+					float currentSample = 0;
+
+					currentSample = sin(phase) * amplitude;
+					phase += phaseIncrement;
+
+					buffer[i*nChannels + 0] = currentSample;	//Left Channel
+					buffer[i*nChannels + 1] = currentSample;	//Right Channel
+				//}
+			}
+		}
+
+	
 }
 
 //--------------------------------------------------------------

@@ -8,14 +8,17 @@ public:
 	int y_pos;
 	int radius;
 	bool isOn = false;
-	//Add audio file
+	bool isPlaying = false;
+	float freq = 440;
 
 	midi_button(){}
-	midi_button(int x, int y, int r){
+	midi_button(int x, int y, int r, float freq_input){
 		x_pos  = x;
 		y_pos  = y;
 		radius = r;
+		freq = freq_input;
 		isOn = false;
+		isPlaying = false;
 	}
 
 	//Turn on if off & vice-versa
@@ -30,8 +33,16 @@ public:
 	}
 
 	//Checks to see if the line is passing through
+	//Also keeps isPlaying updated
 	bool isLinePassing(int x) {
-		return ((x_pos-radius)<x && (x_pos + radius)>x);
+		bool pass = ( (x_pos-radius)< x ) &&  ((x_pos + radius) > x);
+		
+		if (pass)
+			isPlaying = true;
+		else
+			isPlaying = false;
+
+		return isPlaying;
 	}
 
 	void test(int x, int y, int rad) {
