@@ -55,8 +55,6 @@ void ofApp::update(){
 			}
 			else if (grid[i][j].isLinePassing(lineXPos) && grid[i][j].isOn) {
 
-				//Play audio
-
 				ofSetColor(ofColor::red);
 				int x = grid[i][j].x_pos;
 				int y = grid[i][j].y_pos;
@@ -65,30 +63,35 @@ void ofApp::update(){
 				
 				//draw more circles
 				while (repeat > 1) {
-					grid[i][j].test(x + rad*repeat, y, rad / repeat);
-					grid[i][j].test(x - rad*repeat, y, rad / repeat);
-					grid[i][j].test(x , y - rad*repeat, rad / repeat);
-					grid[i][j].test(x, y + rad*repeat, rad / repeat);
-					grid[i][j].test(x + rad*repeat, y + rad*repeat, rad / repeat);
-					grid[i][j].test(x - rad*repeat, y + rad*repeat, rad / repeat);
-					grid[i][j].test(x + rad*repeat, y - rad*repeat, rad / repeat);
-					grid[i][j].test(x + rad*repeat, y + rad*repeat, rad / repeat);
-					grid[i][j].test(x + rad*repeat, y - rad*repeat, rad / repeat);
-					grid[i][j].test(x - rad*repeat, y - rad*repeat, rad / repeat);
-					grid[i][j].test(x - rad*repeat, y - rad*repeat, rad / repeat);
-					grid[i][j].test(x - rad*repeat, y + rad*repeat, rad / repeat);
+
+					ofSetColor(ofColor::blanchedAlmond);
+					ofDrawCircle(x, y - rad*repeat, rad / repeat);
+					ofDrawCircle(x, y + rad*repeat, rad / repeat);
+
+					ofSetColor(ofColor::darkGrey);
+					ofDrawCircle(x + rad*repeat, y, rad / repeat);
+					ofDrawCircle(x + rad*repeat, y + rad*repeat, rad / repeat);
+					ofDrawCircle(x + rad*repeat, y - rad*repeat, rad / repeat);
+					
+					ofSetColor(ofColor::darkOrchid);
+					ofDrawCircle(x - rad*repeat, y, rad / repeat);
+					ofDrawCircle(x - rad*repeat, y - rad*repeat, rad / repeat);
+					ofDrawCircle(x - rad*repeat, y + rad*repeat, rad / repeat);
 
 					repeat--;
-				}
+				} 
+			}
 
-			}else if (grid[i][j].isOn) {
-					//Draw active buttons as green
+			//Draw active buttons as green
+			else if (grid[i][j].isOn) {
 				ofSetColor(ofColor::green);
 			}
+
 			ofDrawCircle(grid[i][j].x_pos,
 						 grid[i][j].y_pos,
 						 grid[i][j].radius);
-			ofSetColor(ofColor::black);
+			
+			ofSetColor(ofColor::black);	//Set back to black when done
 		}
 	}
 	lineXPos+=speed;

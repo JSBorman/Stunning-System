@@ -45,9 +45,4 @@ public:
 		return isPlaying;
 	}
 
-	void test(int x, int y, int rad) {
-		ofDrawCircle(x, y, rad);
-	}
-
-
 };
