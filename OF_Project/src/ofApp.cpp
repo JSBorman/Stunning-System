@@ -13,7 +13,12 @@ void ofApp::setup(){
 
 	initialize_board();
 
-	//Needs to be at end of function
+	frequency = 440;
+	amplitude = 1;
+	phase = 0;
+	phaseIncrement = (TWO_PI * frequency)/ (float)48000;
+
+	//Leave at end of function
 	ofSoundStreamSetup(2, 0, 48000, 512, 4);
 }
 
@@ -47,11 +52,14 @@ void ofApp::update(){
 			}
 			else if (grid[i][j].isLinePassing(lineXPos) && grid[i][j].isOn) {
 
+				//Play audio
+
 				ofSetColor(ofColor::red);
 				int x = grid[i][j].x_pos;
 				int y = grid[i][j].y_pos;
 				int rad = grid[i][j].radius/2;
 				int repeat = 3;
+				
 				//draw more circles
 				while (repeat > 1) {
 					grid[i][j].test(x + rad*repeat, y, rad / repeat);
@@ -91,13 +99,24 @@ void ofApp::draw(){
 	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
 	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
 
+	//Paints a sin wav across the screen
+	/*phase = ofGetElapsedTimef()*TWO_PI*frequency;
+	phase = fmod(phase, TWO_PI);
+	float y = ofMap(sin(phase), -1, 1, 0, ofGetHeight()) * amplitude;
+	float x = ofMap(phase, 0, TWO_PI, 0, ofGetWidth());
+
+	ofDrawCircle(x, y, 5); */
 }
 
 void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 	for (int i = 0; i < bufferSize; i++){
 		float currentSample = 0;
 
-		buffer[i] = currentSample;
+		currentSample = sin(phase) * amplitude;
+		phase += phaseIncrement;
+
+		buffer[i*nChannels + 0] = currentSample;	//Left Channel
+		buffer[i*nChannels + 1] = currentSample;	//Right Channel
 	}
 }
 

@@ -23,4 +23,9 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 		
+		//Audio Vars
+		float frequency;
+		float phase;
+		float amplitude;
+		float phaseIncrement;
 };

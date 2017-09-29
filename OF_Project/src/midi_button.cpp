@@ -23,20 +23,19 @@ public:
 		isOn = !isOn;
 	}
 
+	//Determine if distance between given point & center of circle is smaller than r
 	bool isPointInCircle(int mouse_x, int mouse_y){
-		//Determine if distance between given point & center of circle is smaller than r
-		int distancesquared = (x_pos - mouse_x) * (x_pos - mouse_x) + (y_pos - mouse_y) * (y_pos - mouse_y);
-		return distancesquared <= radius*radius;
+		int distanceSquared = (x_pos - mouse_x) * (x_pos - mouse_x) + (y_pos - mouse_y) * (y_pos - mouse_y);
+		return distanceSquared <= radius*radius;
 	}
+
+	//Checks to see if the line is passing through
 	bool isLinePassing(int x) {
-		//checks to see if the line is passing through
 		return ((x_pos-radius)<x && (x_pos + radius)>x);
 	}
 
 	void test(int x, int y, int rad) {
-
 		ofDrawCircle(x, y, rad);
-
 	}
 
 
