@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
 
 class ofApp : public ofBaseApp{
 
@@ -28,4 +29,7 @@ class ofApp : public ofBaseApp{
 		float phase;
 		float amplitude;
 		float phaseIncrement;
+
+		ofxFloatSlider speed;
+		ofxPanel gui;
 };

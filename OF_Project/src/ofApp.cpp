@@ -3,15 +3,17 @@
 
 const int grid_size = 4;
 float lineXPos = 0;
-float lineSpeed = .4;
 midi_button grid [grid_size][grid_size];
 ofColor colorList[] = { ofColor::fromHex(0xff6600), ofColor::fromHex(0x83f52c) };
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetRectMode(OF_RECTMODE_CENTER);
 	ofSetBackgroundAuto(false);
 
 	initialize_board();
+	gui.setup();
+	gui.add(speed.setup("speed", .5, 0, 1));
 
 	frequency = 440;
 	amplitude = 1;
@@ -88,13 +90,15 @@ void ofApp::update(){
 			ofSetColor(ofColor::black);
 		}
 	}
-	lineXPos+=lineSpeed;
+	lineXPos+=speed;
 	if (lineXPos > 1024)
 		lineXPos = 0;
 
 }
 //--------------------------------------------------------------
 void ofApp::draw(){
+	gui.draw();
+
 	ofDrawLine(lineXPos + 1, 0, lineXPos + 1, 768);//initial line
 	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
 	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
