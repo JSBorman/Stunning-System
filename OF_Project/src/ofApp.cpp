@@ -3,6 +3,9 @@
 
 const int grid_size = 4;
 float lineXPos = 0;
+int left_margin = 100;
+int top_margin = 100;
+
 midi_button grid [grid_size][grid_size];
 ofColor colorList[] = { ofColor::fromHex(0xff6600), ofColor::fromHex(0x83f52c) };
 
@@ -27,8 +30,7 @@ void ofApp::setup(){
 //Each row of buttons should have the same tone
 void ofApp::initialize_board(){
 	int radius = 50;
-	int left_margin = 100;
-	int top_margin = 100;
+
 	for (int i = 0; i < grid_size; i++){
 		for(int j = 0; j < grid_size; j++){
 			grid[i][j] = midi_button(left_margin + (i*ofGetWidth()/grid_size),
@@ -52,8 +54,11 @@ void ofApp::update(){
 			if (grid[i][j].isLinePassing(lineXPos)&& !grid[i][j].isOn) {
 				//if the line is passing through
 				ofSetColor(ofColor::blue);
+				grid[i][j].isPlaying = false;
 			}
 			else if (grid[i][j].isLinePassing(lineXPos) && grid[i][j].isOn) {
+
+				grid[i][j].isPlaying = true;
 
 				ofSetColor(ofColor::red);
 				int x = grid[i][j].x_pos;
@@ -85,6 +90,7 @@ void ofApp::update(){
 			//Draw active buttons as green
 			else if (grid[i][j].isOn) {
 				ofSetColor(ofColor::green);
+				grid[i][j].isPlaying = false;
 			}
 
 			ofDrawCircle(grid[i][j].x_pos,
@@ -108,12 +114,17 @@ void ofApp::draw(){
 	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
 
 	//Paints a sin wav across the screen
-	/*phase = ofGetElapsedTimef()*TWO_PI*frequency;
-	phase = fmod(phase, TWO_PI);
-	float y = ofMap(sin(phase), -1, 1, 0, ofGetHeight()) * amplitude;
-	float x = ofMap(phase, 0, TWO_PI, 0, ofGetWidth());
+	
+	for(int i = 0; i < grid_size; i++){
+		phase = ofGetElapsedTimef();
+		phase = fmod(phase, TWO_PI);
 
-	ofDrawCircle(x, y, 5); */
+		float y = ofMap(sin(phase), -1, 1, grid[i][i].radius * 2 * i, grid[i][i].radius * 2 + top_margin) * amplitude;
+		float x = ofMap(phase, 0, TWO_PI, 0, ofGetWidth());
+
+		ofDrawCircle(x, y, 5);
+	}
+
 }
 
 void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){

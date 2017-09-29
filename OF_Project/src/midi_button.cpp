@@ -33,16 +33,9 @@ public:
 	}
 
 	//Checks to see if the line is passing through
-	//Also keeps isPlaying updated
 	bool isLinePassing(int x) {
 		bool pass = ( (x_pos-radius)< x ) &&  ((x_pos + radius) > x);
-		
-		if (pass)
-			isPlaying = true;
-		else
-			isPlaying = false;
-
-		return isPlaying;
+		return pass;
 	}
 
 };
