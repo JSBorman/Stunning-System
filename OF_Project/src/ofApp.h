@@ -25,11 +25,12 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 		
 		//Audio Vars
-		float frequency;
+		float frequencyFloat;
 		float phase;
 		float amplitude;
 		float phaseIncrement;
 
 		ofxFloatSlider speed;
+		ofxFloatSlider frequency;
 		ofxPanel gui;
 };
