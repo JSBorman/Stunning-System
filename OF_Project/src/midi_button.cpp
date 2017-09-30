@@ -10,6 +10,9 @@ public:
 	bool isOn = false;
 	bool isPlaying = false;
 	float freq = 440;
+	float timeBuffer;
+	float resetTimeBuffer = true;
+
 
 	midi_button(){}
 	midi_button(int x, int y, int r, float freq_input){

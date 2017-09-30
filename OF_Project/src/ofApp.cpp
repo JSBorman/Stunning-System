@@ -17,8 +17,9 @@ void ofApp::setup(){
 	initialize_board();
 	gui.setup();
 	gui.add(speed.setup("speed", .5, 0, 1));
+	gui.add(frequency.setup("frequency", 0, -100, 100));
 
-	frequency = 440;
+	frequencyFloat = 440;
 	amplitude = 1;
 	phase = 0;
 
@@ -36,7 +37,7 @@ void ofApp::initialize_board(){
 			grid[i][j] = midi_button(left_margin + (i*ofGetWidth()/grid_size),
 									top_margin + (j*ofGetHeight()/grid_size),
 									radius,
-									frequency + (i*100));
+									frequencyFloat + (i*100));
 		}
 	}
 }
@@ -59,38 +60,50 @@ void ofApp::update(){
 			else if (grid[i][j].isLinePassing(lineXPos) && grid[i][j].isOn) {
 
 				grid[i][j].isPlaying = true;
+				if (grid[i][j].resetTimeBuffer) {
+					grid[i][j].timeBuffer = ofGetFrameNum();
+					grid[i][j].resetTimeBuffer = false;
+				}
 
 				ofSetColor(ofColor::red);
 				int x = grid[i][j].x_pos;
 				int y = grid[i][j].y_pos;
 				int rad = grid[i][j].radius/2;
 				int repeat = 3;
-				
+				int frametime = 100 / speed;
+
+
+				float div = ofGetFrameNum()- grid[i][j].timeBuffer;
+				div = (frametime - div) / frametime;
+
 				//draw more circles
 				while (repeat > 1) {
 
 					ofSetColor(ofColor::blanchedAlmond);
-					ofDrawCircle(x, y - rad*repeat, rad / repeat);
-					ofDrawCircle(x, y + rad*repeat, rad / repeat);
+					ofDrawCircle(x, y - rad*repeat, rad*div);
+					ofDrawCircle(x, y + rad*repeat, rad*div);
 
 					ofSetColor(ofColor::darkGrey);
-					ofDrawCircle(x + rad*repeat, y, rad / repeat);
-					ofDrawCircle(x + rad*repeat, y + rad*repeat, rad / repeat);
-					ofDrawCircle(x + rad*repeat, y - rad*repeat, rad / repeat);
+					ofDrawCircle(x + rad*repeat, y, rad*div);
+					ofDrawCircle(x + rad*repeat, y + rad*repeat, rad*div);
+					ofDrawCircle(x + rad*repeat, y - rad*repeat, rad*div);
 					
 					ofSetColor(ofColor::darkOrchid);
-					ofDrawCircle(x - rad*repeat, y, rad / repeat);
-					ofDrawCircle(x - rad*repeat, y - rad*repeat, rad / repeat);
-					ofDrawCircle(x - rad*repeat, y + rad*repeat, rad / repeat);
+					ofDrawCircle(x - rad*repeat, y, rad *div);
+					ofDrawCircle(x - rad*repeat, y - rad*repeat, rad *div);
+					ofDrawCircle(x - rad*repeat, y + rad*repeat, rad *div);
 
 					repeat--;
 				} 
 			}
-
 			//Draw active buttons as green
 			else if (grid[i][j].isOn) {
 				ofSetColor(ofColor::green);
 				grid[i][j].isPlaying = false;
+				grid[i][j].resetTimeBuffer = true;
+			}
+			else {
+				grid[i][j].resetTimeBuffer = true;
 			}
 
 			ofDrawCircle(grid[i][j].x_pos,
@@ -98,9 +111,11 @@ void ofApp::update(){
 						 grid[i][j].radius);
 			
 			ofSetColor(ofColor::black);	//Set back to black when done
+			grid[i][j].freq = frequencyFloat + (i * 100);
 		}
 	}
 	lineXPos+=speed;
+	frequencyFloat += frequency;
 	if (lineXPos > 1024)
 		lineXPos = 0;
 
