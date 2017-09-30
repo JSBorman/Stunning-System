@@ -50,6 +50,9 @@ void ofApp::update(){
 	ofSetWindowShape(1024, 768);	
 
 	ofBackground(ofColor::white);
+
+	drawBackground();
+
 	ofSetColor(ofColor::black);
 
 	//Draw all the buttons in grid
@@ -127,8 +130,6 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	gui.draw();
-
-	drawBackground();
 
 	ofDrawLine(lineXPos + 1, 0, lineXPos + 1, 768);//initial line
 	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
