@@ -34,10 +34,11 @@ void ofApp::initialize_board(){
 
 	for (int i = 0; i < grid_size; i++){
 		for(int j = 0; j < grid_size; j++){
-			grid[i][j] = midi_button(left_margin + (i*ofGetWidth()/grid_size),
-									top_margin + (j*ofGetHeight()/grid_size),
-									radius,
-									frequencyFloat + (i*100));
+			grid[i][j] = 
+				midi_button(left_margin + (i*ofGetWidth()/grid_size),
+					top_margin + (j*ofGetHeight()/grid_size),
+					radius,
+					frequencyFloat + (i*100));
 		}
 	}
 }
@@ -129,12 +130,13 @@ void ofApp::draw(){
 	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
 
 	//Paints a sin wav across the screen
-	
 	for(int i = 0; i < grid_size; i++){
 		phase = ofGetElapsedTimef();
 		phase = fmod(phase, TWO_PI);
 
-		float y = ofMap(sin(phase), -1, 1, grid[i][i].radius * 2 * i, grid[i][i].radius * 2 + top_margin) * amplitude;
+		float lower_bound = (grid[i][i].radius * 2 * i) + (top_margin*i);
+
+		float y = ofMap(sin(phase), -1, 1, lower_bound, lower_bound + (grid[i][i].radius * 2));
 		float x = ofMap(phase, 0, TWO_PI, 0, ofGetWidth());
 
 		ofDrawCircle(x, y, 5);
@@ -142,6 +144,7 @@ void ofApp::draw(){
 
 }
 
+//check soundPlayer + audioSoundOutput
 void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 	
 	//Check each button for noise
@@ -153,7 +156,6 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 			if (grid[i][j].isPlaying){
 				//If there is a button, play it
 				for (int i = 0; i < bufferSize; i++){
-
 					float currentSample = 0;
 
 					currentSample = sin(phase) * amplitude;
