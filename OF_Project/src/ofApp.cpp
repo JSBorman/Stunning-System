@@ -46,6 +46,9 @@ void ofApp::initialize_board(){
 //--------------------------------------------------------------
 void ofApp::update(){
 
+	//Ensure window size wasn't changed
+	ofSetWindowShape(1024, 768);	
+
 	ofBackground(ofColor::white);
 	ofSetColor(ofColor::black);
 
@@ -125,10 +128,14 @@ void ofApp::update(){
 void ofApp::draw(){
 	gui.draw();
 
+	drawBackground();
+
 	ofDrawLine(lineXPos + 1, 0, lineXPos + 1, 768);//initial line
 	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
 	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
+}
 
+void ofApp::drawBackground(){
 	//Paints a sin wav across the screen
 	for(int i = 0; i < grid_size; i++){
 		phase = ofGetElapsedTimef();
@@ -141,7 +148,6 @@ void ofApp::draw(){
 
 		ofDrawCircle(x, y, 5);
 	}
-
 }
 
 //check soundPlayer + audioSoundOutput
