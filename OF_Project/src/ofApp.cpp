@@ -17,7 +17,7 @@ void ofApp::setup(){
 	initialize_board();
 	gui.setup();
 	gui.add(speed.setup("speed", .5, 0, 1));
-	gui.add(frequency.setup("frequency", 0, -100, 100));
+	gui.add(frequency.setup("frequency", 0, -300, 300));
 
 	frequencyFloat = 440;
 	amplitude = 1;
@@ -115,7 +115,7 @@ void ofApp::update(){
 		}
 	}
 	lineXPos+=speed;
-	frequencyFloat += frequency;
+	frequencyFloat = frequency+440;
 	if (lineXPos > 1024)
 		lineXPos = 0;
 
