@@ -12,8 +12,7 @@ public:
 	float freq = 440;
 	float timeBuffer;
 	float resetTimeBuffer = true;
-
-
+	
 	midi_button(){}
 	midi_button(int x, int y, int r, float freq_input){
 		x_pos  = x;
@@ -40,5 +39,4 @@ public:
 		bool pass = ( (x_pos-radius)< x ) &&  ((x_pos + radius) > x);
 		return pass;
 	}
-
 };
