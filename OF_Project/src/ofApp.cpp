@@ -19,6 +19,21 @@ void ofApp::setup(){
 	gui.add(speed.setup("speed", .5, 0, 1));
 	gui.add(frequency.setup("frequency", 0, -300, 300));
 
+
+/*	//Background Masking
+	stayAlivefbo.allocate(ofGetWidth()*2, ofGetHeight()*2);
+    goAwayfbo.allocate(ofGetWidth()*2, ofGetHeight()*2);
+    
+    // Clear the FBO's
+    stayAlivefbo.begin();
+    ofClear(0,0,0,255);
+    stayAlivefbo.end();
+    
+    goAwayfbo.begin();
+    ofClear(0,0,0,255);
+    goAwayfbo.end(); */
+
+	//Audio
 	frequencyFloat = 440;
 	amplitude = 1;
 	phase = 0;
@@ -45,14 +60,24 @@ void ofApp::initialize_board(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
 	//Ensure window size wasn't changed
 	ofSetWindowShape(1024, 768);	
+}
 
-	ofBackground(ofColor::white);
-
+//--------------------------------------------------------------
+void ofApp::draw(){
 	drawBackground();
+	updateBoard();
 
+	ofDrawLine(lineXPos + 1, 0, lineXPos + 1, 768);//initial line
+	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
+	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
+
+	gui.draw();
+}
+
+void ofApp::updateBoard(){
+	ofBackground(ofColor::white);
 	ofSetColor(ofColor::black);
 
 	//Draw all the buttons in grid
@@ -78,7 +103,6 @@ void ofApp::update(){
 				int rad = grid[i][j].radius/2;
 				int repeat = 3;
 				int frametime = 100 / speed;
-
 
 				float div = ofGetFrameNum()- grid[i][j].timeBuffer;
 				div = (frametime - div) / frametime;
@@ -121,33 +145,29 @@ void ofApp::update(){
 			grid[i][j].freq = frequencyFloat + (i * 100);
 		}
 	}
+
 	lineXPos+=speed;
 	frequencyFloat = frequency+440;
 	if (lineXPos > 1024)
 		lineXPos = 0;
-
-}
-//--------------------------------------------------------------
-void ofApp::draw(){
-	gui.draw();
-
-	ofDrawLine(lineXPos + 1, 0, lineXPos + 1, 768);//initial line
-	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
-	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
 }
 
+//Paints a sin wav across the screen
+//How to persist when visual effects of buttons should clear?
 void ofApp::drawBackground(){
-	//Paints a sin wav across the screen
+
 	for(int i = 0; i < grid_size; i++){
+		
 		phase = ofGetElapsedTimef();
 		phase = fmod(phase, TWO_PI);
-
 		float lower_bound = (grid[i][i].radius * 2 * i) + (top_margin*i);
-
-		float y = ofMap(sin(phase), -1, 1, lower_bound, lower_bound + (grid[i][i].radius * 2));
 		float x = ofMap(phase, 0, TWO_PI, 0, ofGetWidth());
 
-		ofDrawCircle(x, y, 5);
+		for(int j = 0; j < grid_size; j++){
+			float y = ofMap(sin(phase), -1, 1, lower_bound + (j*top_margin/4), lower_bound + (grid[i][i].radius * 2) + (j*top_margin/4));
+
+			ofDrawCircle(x, y, 5);
+		}
 	}
 }
 
