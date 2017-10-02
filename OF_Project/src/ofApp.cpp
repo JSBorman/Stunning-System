@@ -32,7 +32,7 @@ void ofApp::setup(){
 	}
 
 	//Leave at end of function
-	ofSoundStreamSetup(2, 0, 48000, 512, 4);
+	ofSoundStreamSetup(4, 0, 48000, 512, 4);
 }
 
 //Populate grid with buttons
@@ -196,8 +196,8 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 					currentSample = sin(phase) * amplitude;
 					phase += phaseIncrement;
 
-					buffer[i*nChannels + 0] = currentSample;	//Left Channel
-					buffer[i*nChannels + 1] = currentSample;	//Right Channel
+					buffer[i*nChannels + i] = currentSample;	//Left Channel
+				//	buffer[i*nChannels + 1] = currentSample;	//Right Channel
 				}
 			}
 		}	
