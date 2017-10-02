@@ -19,20 +19,6 @@ void ofApp::setup(){
 	gui.add(speed.setup("speed", .5, 0, 1));
 	gui.add(frequency.setup("frequency", 0, -300, 300));
 
-
-/*	//Background Masking
-	stayAlivefbo.allocate(ofGetWidth()*2, ofGetHeight()*2);
-    goAwayfbo.allocate(ofGetWidth()*2, ofGetHeight()*2);
-    
-    // Clear the FBO's
-    stayAlivefbo.begin();
-    ofClear(0,0,0,255);
-    stayAlivefbo.end();
-    
-    goAwayfbo.begin();
-    ofClear(0,0,0,255);
-    goAwayfbo.end(); */
-
 	//Audio
 	frequencyFloat = 440;
 	amplitude = 1;
@@ -40,10 +26,10 @@ void ofApp::setup(){
 
 	//Background
 	for(int i = 0; i < 5; i++){
-		timers[i] = 1.0 * i;
+		timers[i] = .5;
 		elapsedTimers[i] = &timers[i];
 
-		phases[i] = 5.0 * i;
+		phases[i] = grid[0][i].freq;
 		backgroundPhases[i] = &phases[i];
 	}
 
@@ -97,7 +83,7 @@ void ofApp::updateBoard(){
 
 			if (grid[i][j].isLinePassing(lineXPos)&& !grid[i][j].isOn) {
 				//if the line is passing through
-				ofSetColor(ofColor::blue);
+				ofSetColor(ofColor::orange);
 				grid[i][j].isPlaying = false;
 			}
 			else if (grid[i][j].isLinePassing(lineXPos) && grid[i][j].isOn) {
@@ -167,37 +153,30 @@ void ofApp::updateBoard(){
 //How to persist when visual effects of buttons should clear?
 void ofApp::drawBackground(float * elapsedTime, float * backgroundPhase){
 
-//	ofLog(OF_LOG_NOTICE, "Pointer: %p", elapsedTime);
-//	ofLog(OF_LOG_NOTICE, "Value: %f", *elapsedTime);
-
-	*elapsedTime += 1.0;
+	*elapsedTime += .01;
 
 	for(int i = 0; i < grid_size; i++){
 
-		if(*elapsedTime > ofGetWidth()){
-			*elapsedTime = 0;
-
-			//*backgroundPhase = *backgroundPhase * ofRandom(0,10);
-			*backgroundPhase = fmod(*backgroundPhase, TWO_PI);	
+		if(*elapsedTime > 5){
+			*elapsedTime = 1;
 		}
 
+		*backgroundPhase = fmod(*backgroundPhase, TWO_PI);	
+
+		//Base the motion on the change in time
+		float new_x_value = ofGetSeconds() * *elapsedTime;
+		new_x_value = fmod(new_x_value, TWO_PI);
+
 		float lower_bound = (grid[i][i].radius * 2 * i) + (top_margin*i);
-		float x = ofMap(*backgroundPhase, 0, TWO_PI, 0, ofGetWidth());
+		float x = ofMap(new_x_value, 0, TWO_PI, 0, ofGetWidth());
 
-		for(int j = 0; j < grid_size - 2; j++){
-			float y = ofMap(sin(*backgroundPhase), -1, 1, lower_bound + (j*top_margin/4), lower_bound + (grid[i][i].radius * 2) + (j*top_margin/4));
+		for(int j = 0; j < grid_size - 3; j++){
+			float y = ofMap( .5 * sin(x / *backgroundPhase), -1, 1, lower_bound + (j*top_margin/4), lower_bound + (grid[i][i].radius * 2) + (j*top_margin/4));
 
-			if(ofRandom(0,100) > 80)
-				ofSetColor( ofColor( ofRandom( 0, 255 ),  ofRandom( 0, 255 ), ofRandom( 0, 255 ) ));
-			
-			ofSetLineWidth(40); 
-			
-			//Don't draw lines offscreen
-		//	if(x + *elapsedTime + 200 > ofGetWidth())
-				ofDrawLine(x + 50, y + 50, x + ofRandom(-20, 100), y + ofRandom(-50, 100));
+			//float y = sin(x / *backgroundPhase);
 
-		//	else
-		//		ofDrawLine(x + *elapsedTime, y, x + *elapsedTime + ofRandom(20, 250), y + ofRandom(-250, 250));
+			ofSetColor(ofColor::mediumPurple);
+			ofDrawCircle(x, y, 10);
 		}
 	}
 }
@@ -223,9 +202,7 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 					buffer[i*nChannels + 1] = currentSample;	//Right Channel
 				}
 			}
-		}
-
-	
+		}	
 }
 
 //--------------------------------------------------------------
@@ -261,9 +238,6 @@ void ofApp::mousePressed(int x, int y, int button){
 		}
 	}
 }
-
-
-
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
