@@ -5,6 +5,7 @@ const int grid_size = 4;
 float lineXPos = 0;
 int left_margin = 100;
 int top_margin = 100;
+int background_size = 8;
 
 midi_button grid [grid_size][grid_size];
 ofColor colorList[] = { ofColor::fromHex(0xff6600), ofColor::fromHex(0x83f52c) };
@@ -25,11 +26,11 @@ void ofApp::setup(){
 	phase = 0;
 
 	//Background
-	for(int i = 0; i < 5; i++){
-		timers[i] = .5;
+	for(int i = 0; i < background_size; i++){
+		timers[i] = i;
 		elapsedTimers[i] = &timers[i];
 
-		phases[i] = grid[0][i].freq;
+		phases[i] = grid[0][0].freq;
 		backgroundPhases[i] = &phases[i];
 	}
 
@@ -63,9 +64,13 @@ void ofApp::update(){
 void ofApp::draw(){
 	ofBackground(ofColor::darkMagenta);
 
-	for(int i = 0; i < 5; i++){
-		drawBackground(elapsedTimers[i], backgroundPhases[i]);
+	for(int i = 0; i < background_size; i++){
+		float tmp_Freq = grid[ (int)fmod(i,grid_size) ][0].freq;
+		drawBackground(elapsedTimers[i], background_size, tmp_Freq);
+		cout << "Freq: " << tmp_Freq << endl;
+		cout << "I: " << i << endl;
 	}
+
 
 	updateBoard();
 
@@ -151,33 +156,37 @@ void ofApp::updateBoard(){
 
 //Paints a sin wav across the screen
 //How to persist when visual effects of buttons should clear?
-void ofApp::drawBackground(float * elapsedTime, float * backgroundPhase){
+void ofApp::drawBackground(float * elapsedTime, int grid_space, float grid_Freq){
 
 	*elapsedTime += .01;
+	float numCols = grid_space;
 
-	for(int i = 0; i < grid_size; i++){
+	grid_space = fmod(grid_space, grid_size);
 
-		if(*elapsedTime > 5){
-			*elapsedTime = 1;
+	for(int i = 0; i < numCols; i++){
+
+		if(*elapsedTime > 6){
+			*elapsedTime = 0;
 		}
 
-		*backgroundPhase = fmod(*backgroundPhase, TWO_PI);	
+		float lower_bound = (grid[0][0].radius * 2 * i) + (top_margin*i/2);
 
 		//Base the motion on the change in time
-		float new_x_value = ofGetSeconds() * *elapsedTime;
-		new_x_value = fmod(new_x_value, TWO_PI);
+		float new_y_value = fmod(*elapsedTime, TWO_PI);
+		float y = ofMap(new_y_value, 0, TWO_PI, 0, ofGetHeight());
 
-		float lower_bound = (grid[i][i].radius * 2 * i) + (top_margin*i);
-		float x = ofMap(new_x_value, 0, TWO_PI, 0, ofGetWidth());
+		for(int j = 0; j < numCols; j++){
+		//	int colFreq = fmod(i, grid_size);
+		//	float grid_Freq = grid[colFreq][0].freq;
+		//	grid_Freq = grid_Freq/ (TWO_PI*2);
 
-		for(int j = 0; j < grid_size - 3; j++){
-			float y = ofMap( .5 * sin(x / *backgroundPhase), -1, 1, lower_bound + (j*top_margin/4), lower_bound + (grid[i][i].radius * 2) + (j*top_margin/4));
-
-			//float y = sin(x / *backgroundPhase);
+			float sin_value = .5 * sin(y / (grid_Freq/TWO_PI));
+			float x = ofMap( sin_value, -1, 1, lower_bound, lower_bound + (grid[0][0].radius * 2) );
 
 			ofSetColor(ofColor::mediumPurple);
 			ofDrawCircle(x, y, 10);
 		}
+		
 	}
 }
 
