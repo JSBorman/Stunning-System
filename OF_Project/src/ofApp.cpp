@@ -5,7 +5,7 @@ const int grid_size = 4;
 float lineXPos = 0;
 int left_margin = 100;
 int top_margin = 100;
-int background_size = 8;
+int background_size = 7;
 
 midi_button grid [grid_size][grid_size];
 ofColor colorList[] = { ofColor::fromHex(0xff6600), ofColor::fromHex(0x83f52c) };
@@ -61,7 +61,7 @@ void ofApp::update(){
 void ofApp::draw(){
 	ofBackground(ofColor::darkMagenta);
 
-	for(int i = 0; i < background_size; i++){
+	for(int i = 0; i < background_size-1; i++){
 		drawBackground(elapsedTimers[i]);
 	}
 
@@ -82,7 +82,7 @@ void ofApp::updateBoard(){
 
 			if (grid[i][j].isLinePassing(lineXPos)&& !grid[i][j].isOn) {
 				//if the line is passing through
-				ofSetColor(ofColor::orange);
+				ofSetColor(ofColor::mediumPurple);
 				grid[i][j].isPlaying = false;
 			}
 			else if (grid[i][j].isLinePassing(lineXPos) && grid[i][j].isOn) {
@@ -93,7 +93,6 @@ void ofApp::updateBoard(){
 					grid[i][j].resetTimeBuffer = false;
 				}
 
-				ofSetColor(ofColor::red);
 				int x = grid[i][j].x_pos;
 				int y = grid[i][j].y_pos;
 				int rad = grid[i][j].radius/2;
@@ -106,26 +105,28 @@ void ofApp::updateBoard(){
 				//draw more circles
 				while (repeat > 1) {
 
-					ofSetColor(ofColor::blanchedAlmond);
+					ofSetColor(ofColor::lightBlue);
 					ofDrawCircle(x, y - rad*repeat, rad*div);
 					ofDrawCircle(x, y + rad*repeat, rad*div);
 
-					ofSetColor(ofColor::darkGrey);
+					ofSetColor(ofColor::lightBlue);
 					ofDrawCircle(x + rad*repeat, y, rad*div);
 					ofDrawCircle(x + rad*repeat, y + rad*repeat, rad*div);
 					ofDrawCircle(x + rad*repeat, y - rad*repeat, rad*div);
 					
-					ofSetColor(ofColor::darkOrchid);
+					ofSetColor(ofColor::lightBlue);
 					ofDrawCircle(x - rad*repeat, y, rad *div);
 					ofDrawCircle(x - rad*repeat, y - rad*repeat, rad *div);
 					ofDrawCircle(x - rad*repeat, y + rad*repeat, rad *div);
+
+					ofSetColor(ofColor::midnightBlue);
 
 					repeat--;
 				} 
 			}
 			//Draw active buttons as green
 			else if (grid[i][j].isOn) {
-				ofSetColor(ofColor::green);
+				ofSetColor(ofColor::skyBlue);
 				grid[i][j].isPlaying = false;
 				grid[i][j].resetTimeBuffer = true;
 			}
@@ -151,11 +152,11 @@ void ofApp::updateBoard(){
 //Paints sin waves across the screen
 void ofApp::drawBackground(float * elapsedTime){
 
-	*elapsedTime += .05 * ofGetLastFrameTime();	//Controls speed, based on framerate
+	*elapsedTime += (1+speed) * ofGetLastFrameTime();	//Controls speed, based on framerate
 
 	for(int i = 0; i < background_size; i++){
 
-		if(*elapsedTime > 6){
+		if(*elapsedTime > 6.3){
 			*elapsedTime = 0;
 		}
 
@@ -165,17 +166,15 @@ void ofApp::drawBackground(float * elapsedTime){
 		float new_y_value = fmod(*elapsedTime, TWO_PI);
 		float y = ofMap(new_y_value, 0, TWO_PI, 0, ofGetHeight());
 
-		for(int j = 0; j < background_size; j++){
-			int colFreq = fmod(i, grid_size);
-			float grid_Freq = grid[colFreq][0].freq;
-			grid_Freq = fmod(grid_Freq, TWO_PI);
+		int colFreq = fmod(i, grid_size);
+		float grid_Freq = grid[colFreq][0].freq;
+		grid_Freq = grid_Freq/TWO_PI/2;
 		
-			float sin_value = .5 * sin(y / grid_Freq);
-			float x = ofMap( sin_value, -1, 1, lower_bound, lower_bound + (grid[0][0].radius * 2) );
+		float sin_value = .5 * sin(y / grid_Freq);
+		float x = ofMap( sin_value, -1, 1, lower_bound, lower_bound + (grid[0][0].radius * 2) );
 
-			ofSetColor(ofColor::mediumPurple);
-			ofDrawCircle(x, y, 10);
-		}
+		ofSetColor(ofColor::lightSteelBlue);
+		ofDrawCircle(x, y, 10);
 	}
 }
 
