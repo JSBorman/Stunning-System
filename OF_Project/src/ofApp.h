@@ -10,7 +10,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void initialize_board();	//Draw the base midi board
-		void drawBackground();		//Draw that cool sin-y stuff
+		void drawBackground(float * elapsedTime, float * backgroundPhase);		//Draw that cool sin-y stuff
 		void updateBoard();			//Draw the board as line collides, etc.
 
 		void audioOut(float* buffer, int bufferSize, int nChannels);
@@ -32,12 +32,17 @@ class ofApp : public ofBaseApp{
 		float amplitude;
 		float phaseIncrement;
 
+
 		//Gui Vars
 		ofxFloatSlider speed;
 		ofxFloatSlider frequency;
 		ofxPanel gui;
 
 		//Background Vars
-		ofFbo stayAlivefbo;		//For the background sin stuff
-    	ofFbo goAwayfbo;		//For everything else
+		float timers[5];
+		float phases[5];
+
+		float* elapsedTimers[5];
+		float* backgroundPhases[5];
+
 };

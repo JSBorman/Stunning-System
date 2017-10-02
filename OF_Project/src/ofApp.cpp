@@ -38,6 +38,15 @@ void ofApp::setup(){
 	amplitude = 1;
 	phase = 0;
 
+	//Background
+	for(int i = 0; i < 5; i++){
+		timers[i] = 1.0 * i;
+		elapsedTimers[i] = &timers[i];
+
+		phases[i] = 5.0 * i;
+		backgroundPhases[i] = &phases[i];
+	}
+
 	//Leave at end of function
 	ofSoundStreamSetup(2, 0, 48000, 512, 4);
 }
@@ -66,20 +75,22 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	drawBackground();
+	ofBackground(ofColor::darkMagenta);
+
+	for(int i = 0; i < 5; i++){
+		drawBackground(elapsedTimers[i], backgroundPhases[i]);
+	}
+
 	updateBoard();
 
-	ofDrawLine(lineXPos + 1, 0, lineXPos + 1, 768);//initial line
+	ofSetLineWidth(5);
 	ofDrawLine(lineXPos, 0, lineXPos, 768);			//2 more lines more thickness
-	ofDrawLine(lineXPos - 1, 0, lineXPos - 1, 768);
 
 	gui.draw();
 }
 
 void ofApp::updateBoard(){
-	ofBackground(ofColor::white);
 	ofSetColor(ofColor::black);
-
 	//Draw all the buttons in grid
 	for (int i = 0; i < grid_size; i++){
 		for(int j = 0; j < grid_size; j++){
@@ -154,19 +165,39 @@ void ofApp::updateBoard(){
 
 //Paints a sin wav across the screen
 //How to persist when visual effects of buttons should clear?
-void ofApp::drawBackground(){
+void ofApp::drawBackground(float * elapsedTime, float * backgroundPhase){
+
+//	ofLog(OF_LOG_NOTICE, "Pointer: %p", elapsedTime);
+//	ofLog(OF_LOG_NOTICE, "Value: %f", *elapsedTime);
+
+	*elapsedTime += 1.0;
 
 	for(int i = 0; i < grid_size; i++){
-		
-		phase = ofGetElapsedTimef();
-		phase = fmod(phase, TWO_PI);
+
+		if(*elapsedTime > ofGetWidth()){
+			*elapsedTime = 0;
+
+			//*backgroundPhase = *backgroundPhase * ofRandom(0,10);
+			*backgroundPhase = fmod(*backgroundPhase, TWO_PI);	
+		}
+
 		float lower_bound = (grid[i][i].radius * 2 * i) + (top_margin*i);
-		float x = ofMap(phase, 0, TWO_PI, 0, ofGetWidth());
+		float x = ofMap(*backgroundPhase, 0, TWO_PI, 0, ofGetWidth());
 
-		for(int j = 0; j < grid_size; j++){
-			float y = ofMap(sin(phase), -1, 1, lower_bound + (j*top_margin/4), lower_bound + (grid[i][i].radius * 2) + (j*top_margin/4));
+		for(int j = 0; j < grid_size - 2; j++){
+			float y = ofMap(sin(*backgroundPhase), -1, 1, lower_bound + (j*top_margin/4), lower_bound + (grid[i][i].radius * 2) + (j*top_margin/4));
 
-			ofDrawCircle(x, y, 5);
+			if(ofRandom(0,100) > 80)
+				ofSetColor( ofColor( ofRandom( 0, 255 ),  ofRandom( 0, 255 ), ofRandom( 0, 255 ) ));
+			
+			ofSetLineWidth(40); 
+			
+			//Don't draw lines offscreen
+		//	if(x + *elapsedTime + 200 > ofGetWidth())
+				ofDrawLine(x + 50, y + 50, x + ofRandom(-20, 100), y + ofRandom(-50, 100));
+
+		//	else
+		//		ofDrawLine(x + *elapsedTime, y, x + *elapsedTime + ofRandom(20, 250), y + ofRandom(-250, 250));
 		}
 	}
 }
