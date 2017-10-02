@@ -10,7 +10,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void initialize_board();	//Draw the base midi board
-		void drawBackground(float * elapsedTime, int grid_space);		//Draw that cool sin-y stuff
+		void drawBackground(float * elapsedTime);		//Draw that cool sin-y stuff
 		void updateBoard();			//Draw the board as line collides, etc.
 
 		void audioOut(float* buffer, int bufferSize, int nChannels);
@@ -31,7 +31,6 @@ class ofApp : public ofBaseApp{
 		float phase;
 		float amplitude;
 		float phaseIncrement;
-
 
 		//Gui Vars
 		ofxFloatSlider speed;

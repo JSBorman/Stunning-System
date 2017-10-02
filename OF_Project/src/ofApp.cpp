@@ -62,8 +62,7 @@ void ofApp::draw(){
 	ofBackground(ofColor::darkMagenta);
 
 	for(int i = 0; i < background_size; i++){
-		float tmp_Freq = grid[ (int)fmod(i,grid_size) ][0].freq;
-		drawBackground(elapsedTimers[i], background_size);
+		drawBackground(elapsedTimers[i]);
 	}
 
 
@@ -149,16 +148,12 @@ void ofApp::updateBoard(){
 		lineXPos = 0;
 }
 
-//Paints a sin wav across the screen
-//How to persist when visual effects of buttons should clear?
-void ofApp::drawBackground(float * elapsedTime, int grid_space){
+//Paints sin waves across the screen
+void ofApp::drawBackground(float * elapsedTime){
 
-	*elapsedTime += .01;
-	float numCols = grid_space;
+	*elapsedTime += .05 * ofGetLastFrameTime();	//Controls speed, based on framerate
 
-	grid_space = fmod(grid_space, grid_size);
-
-	for(int i = 0; i < numCols; i++){
+	for(int i = 0; i < background_size; i++){
 
 		if(*elapsedTime > 6){
 			*elapsedTime = 0;
@@ -170,7 +165,7 @@ void ofApp::drawBackground(float * elapsedTime, int grid_space){
 		float new_y_value = fmod(*elapsedTime, TWO_PI);
 		float y = ofMap(new_y_value, 0, TWO_PI, 0, ofGetHeight());
 
-		for(int j = 0; j < numCols; j++){
+		for(int j = 0; j < background_size; j++){
 			int colFreq = fmod(i, grid_size);
 			float grid_Freq = grid[colFreq][0].freq;
 			grid_Freq = fmod(grid_Freq, TWO_PI);
@@ -181,7 +176,6 @@ void ofApp::drawBackground(float * elapsedTime, int grid_space){
 			ofSetColor(ofColor::mediumPurple);
 			ofDrawCircle(x, y, 10);
 		}
-		
 	}
 }
 
@@ -194,8 +188,8 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 
 			phaseIncrement = (TWO_PI * grid[i][j].freq)/ (float)48000;
 
-			if (grid[i][j].isPlaying){
 				//If there is a button, play it
+			if (grid[i][j].isPlaying){
 				for (int i = 0; i < bufferSize; i++){
 					float currentSample = 0;
 
