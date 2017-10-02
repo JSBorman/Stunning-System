@@ -10,7 +10,7 @@ class ofApp : public ofBaseApp{
 		void update();
 		void draw();
 		void initialize_board();	//Draw the base midi board
-		void drawBackground(float * elapsedTime, int grid_space, float grid_Freq);		//Draw that cool sin-y stuff
+		void drawBackground(float * elapsedTime, int grid_space);		//Draw that cool sin-y stuff
 		void updateBoard();			//Draw the board as line collides, etc.
 
 		void audioOut(float* buffer, int bufferSize, int nChannels);
@@ -40,9 +40,5 @@ class ofApp : public ofBaseApp{
 
 		//Background Vars
 		float timers[8];
-		float phases[8];
-
 		float* elapsedTimers[8];
-		float* backgroundPhases[8];
-
 };

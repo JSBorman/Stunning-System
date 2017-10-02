@@ -29,9 +29,6 @@ void ofApp::setup(){
 	for(int i = 0; i < background_size; i++){
 		timers[i] = i;
 		elapsedTimers[i] = &timers[i];
-
-		phases[i] = grid[0][0].freq;
-		backgroundPhases[i] = &phases[i];
 	}
 
 	//Leave at end of function
@@ -66,9 +63,7 @@ void ofApp::draw(){
 
 	for(int i = 0; i < background_size; i++){
 		float tmp_Freq = grid[ (int)fmod(i,grid_size) ][0].freq;
-		drawBackground(elapsedTimers[i], background_size, tmp_Freq);
-		cout << "Freq: " << tmp_Freq << endl;
-		cout << "I: " << i << endl;
+		drawBackground(elapsedTimers[i], background_size);
 	}
 
 
@@ -156,7 +151,7 @@ void ofApp::updateBoard(){
 
 //Paints a sin wav across the screen
 //How to persist when visual effects of buttons should clear?
-void ofApp::drawBackground(float * elapsedTime, int grid_space, float grid_Freq){
+void ofApp::drawBackground(float * elapsedTime, int grid_space){
 
 	*elapsedTime += .01;
 	float numCols = grid_space;
@@ -176,11 +171,11 @@ void ofApp::drawBackground(float * elapsedTime, int grid_space, float grid_Freq)
 		float y = ofMap(new_y_value, 0, TWO_PI, 0, ofGetHeight());
 
 		for(int j = 0; j < numCols; j++){
-		//	int colFreq = fmod(i, grid_size);
-		//	float grid_Freq = grid[colFreq][0].freq;
-		//	grid_Freq = grid_Freq/ (TWO_PI*2);
-
-			float sin_value = .5 * sin(y / (grid_Freq/TWO_PI));
+			int colFreq = fmod(i, grid_size);
+			float grid_Freq = grid[colFreq][0].freq;
+			grid_Freq = fmod(grid_Freq, TWO_PI);
+		
+			float sin_value = .5 * sin(y / grid_Freq);
 			float x = ofMap( sin_value, -1, 1, lower_bound, lower_bound + (grid[0][0].radius * 2) );
 
 			ofSetColor(ofColor::mediumPurple);
