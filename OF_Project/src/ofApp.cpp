@@ -186,6 +186,7 @@ void ofApp::audioOut(float* buffer, int bufferSize, int nChannels){
 		for (int j = 0; j < grid_size; j++){
 
 			phaseIncrement = (TWO_PI * grid[i][j].freq)/ (float)48000;
+			cout << "phase: "<<phaseIncrement << endl;
 
 				//If there is a button, play it
 			if (grid[i][j].isPlaying){
@@ -214,4 +215,8 @@ void ofApp::mousePressed(int x, int y, int button){
 			}
 		}
 	}
+}
+
+void ofApp:: exit() {
+	ofSoundStreamClose();
 }
